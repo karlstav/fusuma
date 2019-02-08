@@ -9,7 +9,9 @@ module Fusuma
 
     # @return [CommandExecutor, nil]
     def generate_command_executor
-      return unless enough_events?
+      unless detect_event_type =~ /tap/
+        return unless enough_events?
+      end
       vector = generate_vector(detect_event_type)
       trigger = CommandExecutor.new(finger, vector)
       return unless vector.enough?(trigger)
@@ -32,6 +34,8 @@ module Fusuma
         avg_swipe
       when 'pinch'
         avg_pinch
+      when 'tap'
+        avg_tap
       end
     end
 
@@ -49,6 +53,10 @@ module Fusuma
       diameter = avg_attrs(:zoom)
       delta_diameter = diameter - first.zoom
       Pinch.new(delta_diameter)
+    end
+
+    def avg_tap
+      Tap.new
     end
 
     def sum_attrs(attr)
@@ -80,8 +88,15 @@ module Fusuma
     end
 
     def detect_event_type
-      first.event =~ /GESTURE_(.*?)_/
-      Regexp.last_match(1).downcase
+      unless first == nil
+        line = first.event
+      end
+      if line =~ /GESTURE_(.*?)_/
+         return Regexp.last_match(1).downcase
+      end
+      else if line =~ /POINTER_BUTTON/ #&& line =~ /released/
+         return 'tap'
+      end
     end
   end
 end

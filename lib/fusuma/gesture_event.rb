@@ -17,9 +17,15 @@ module Fusuma
         return if device_names.none? do |device_name|
           line =~ /^\s?#{device_name}/
         end
-        return if line =~ /_BEGIN/
-        return unless line =~ /GESTURE_SWIPE|GESTURE_PINCH/
+        return if line =~ /_BEGIN|pressed/
+        return unless line =~ /GESTURE_SWIPE|GESTURE_PINCH|BTN_MIDDLE|BTN_RIGHT/
         time, event, finger, directions = gesture_event_arguments(line)
+	if line =~ /BTN_MIDDLE/
+          finger = 3
+        end
+	if line =~ /BTN_RIGHT/
+          finger = 2
+        end
         MultiLogger.debug(time: time, event: event,
                           finger: finger, directions: directions)
         new(time, event, finger, directions)

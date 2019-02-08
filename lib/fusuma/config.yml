@@ -30,6 +30,12 @@ pinch:
     out:
       command: 'xdotool key super+s'
 
+tap:
+  2:
+    command: 'xdotool click 3'
+  3:
+    command: 'xdotool click 2'
+
 threshold:
   swipe: 0.3
   pinch: 0.1

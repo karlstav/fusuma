@@ -93,10 +93,10 @@ module Fusuma
       end
       if line =~ /GESTURE_(.*?)_/
          return Regexp.last_match(1).downcase
-      end
       else if line =~ /POINTER_BUTTON/ #&& line =~ /released/
          return 'tap'
       end
+    end
     end
   end
 end
